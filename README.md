@@ -1,2 +1,2 @@
 # lib_books
-Django site for work with stymy books in schools
+Django site for work with study books in schools
