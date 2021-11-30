@@ -1,55 +1,21 @@
-<!DOCTYPE html>
-<html>
-  <head>
-
-  </head>
-  <body>
-    <form method="POST" style="width:80%; margin: 0 auto; text-align: center;">
-      {% csrf_token %}
-      <p>
-        <label for="categories">Фильтр по категории:</label>
-        <select name="categories" id="categories">
-          <option value="">все</option>
-          {% for item in categories %}
-            <option value="{{ item.code }}"
-              {% if input_categories == item.code %}selected{% endif %}>{{ item }}
-            </option>
-          {% endfor %}
-        </select>
-      </p>
-      <p>
-        <label for="search">Поиск по автору и названию:</label>
-        <input id="search" type="text" size="40" name="search" value="{{ input_search }}">
-      </p>
-      <p>
-        <label for="classes">Фильтр по классу:</label>
-        <select name="classes" id="classes">
-          <option value="">нет</option>
-          {% for item in classes %}
-            <option value="{{ item.id }}"
-              {% if input_classes == item.id %}selected{% endif %}>{{ item }}
-            </option>
-          {% endfor %}
-        </select>
-      </p>
-      <p>
-        <input type="submit" value="Найти">
-        <a href="{% url 'books:index' %}">Очистить</a>
-      </p>
-    </form>
-    <table border="1" width="80%" align="center">
+{% extends 'base.html' %}
+{% block title %}
+  Перечень учебников
+{% endblock %}
+{% block content %}
+  {% include 'includes/form.html' with card_header='Поиск учебника' button='Поиск' link='books:index' link_text='Очистить' %}
+  <table class="table table-bordered table-hover table-sm">
+    <tr>
+      <th>Код</th><th>Автор</th><th>Название</th><th>Класс</th>
+      <th>Издательство</th><th>Язык</th><th>Особенности</th>
+    </tr>
+    {% for item in books %}
       <tr>
-        <th>Код</th><th>Автор</th><th>Название</th><th>Класс</th>
-        <th>Издательство</th><th>Язык</th><th>Особенности</th>
+        <td>{{ item.code }}</td><td>{{ item.author }}</td>
+        <td>{{ item.title }}</td><td>{{ item.classes }}</td>
+        <td>{{ item.publisher }}</td><td>{{ item.language }}</td>
+        <td>{{ item.special }}</td>
       </tr>
-      {% for item in books %}
-        <tr>
-          <td>{{ item.code }}</td><td>{{ item.author }}</td>
-          <td>{{ item.title }}</td><td>{{ item.classes }}</td>
-          <td>{{ item.publisher }}</td><td>{{ item.language }}</td>
-          <td>{{ item.special }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-  </body>
-</html>
+    {% endfor %}
+  </table>
+{% endblock %}

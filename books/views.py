@@ -4,43 +4,39 @@ from functools import reduce
 from django.shortcuts import render
 from django.db.models import Q
 
-from .models import Book, Categorie, Klass
+from books.models import Book, Categorie, Klass
+from books.forms import SearchForm
 
 
 def books_index(request):
-    input_search = ''
-    input_classes = 0
-    input_categories = ''
     books = Book.objects.select_related(
         'classes',
         'publisher',
         'language',
         'special',
     ).all()
+    form = SearchForm(request.POST or None)
     if request.method == 'POST':
-        if request.POST.get('search'):
-            input_search = request.POST.get('search')
-            search_list = input_search.split()
+        search_list = request.POST.get('search').split()
+        if search_list:
             books = books.filter(
                 reduce(operator.and_,
                        (Q(author__contains=q) for q in search_list)) |
                 reduce(operator.and_,
                        (Q(title__contains=q) for q in search_list))
             )
-        if request.POST.get('classes'):
-            input_classes = int(request.POST.get('classes'))
-            books = books.filter(classes__pk=input_classes).all()
-        if request.POST.get('categories'):
-            input_categories = request.POST.get('categories')
-            books = books.filter(code__startswith=input_categories).all()
-    classes = Klass.objects.order_by('class_from').all()
-    categories = Categorie.objects.order_by('code').all()
+        input_classes = request.POST.get('classes')
+        if int(input_classes):
+            books = books.filter(
+                Q(classes__class_from=int(input_classes)) |
+                Q(classes__class_to=int(input_classes))
+            )
+        input_category = request.POST.get('categories')
+        if input_category:
+            category = Categorie.objects.get(pk=input_category)
+            books = books.filter(code__startswith=category.code).all()
     context = {
         'books': books[:100],
-        'classes': classes,
-        'categories': categories,
-        'input_search': input_search,
-        'input_classes': input_classes,
-        'input_categories': input_categories,
+        'form': form,
     }
     return render(request, 'books/index.html', context)
