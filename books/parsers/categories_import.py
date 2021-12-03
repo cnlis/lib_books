@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from books.models import Categorie
+from books.models import Category
 
 
 def category_parser():
@@ -34,9 +34,9 @@ def category_parser():
     return data
 
 
-def categories_saver(categories_list):
+def category_saver(categories_list):
     for item in tqdm(categories_list):
-        Categorie.objects.create(
+        Category.objects.create(
             code=item[0],
             title=item[1]
         )

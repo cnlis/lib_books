@@ -4,7 +4,7 @@
     style="background-color: darkcyan"
   >
     <div class="container">
-      <a class="navbar-brand" href="{% url 'books:index' %}">
+      <a class="navbar-brand" href="{% url 'funds:index' %}">
         <img src="{% static 'img/logo.png' %}" 
           width="30" height="30" class="d-inline-block align-top" alt="">
         <span style="color:white">АСУ Учет школьных учебников</a>
@@ -23,10 +23,34 @@
           {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link
+                {% if view_name  == 'books:index' %}active{% endif %}"
+                href="{% url 'books:index' %}"
+              >
+                Перечень
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link
+                {% if view_name  == 'funds:income_list' %}active{% endif %}"
+                href="{% url 'funds:income_list' %}"
+              >
+                Поступления
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link
                 {% if view_name  == '' %}active{% endif %}"
                 href=""
               >
-                Новая запись
+                Списания
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link
+                {% if view_name  == '' %}active{% endif %}"
+                href=""
+              >
+                Обменный фонд
               </a>
             </li>
             <li class="nav-item">

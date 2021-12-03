@@ -1,16 +1,22 @@
 import re
 
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, IntegrityError, transaction
 from django.db.models.constraints import UniqueConstraint
 
 
-class Categorie(models.Model):
+def crop_text(s):
+    if len(s) <= 40:
+        return s
+    return s[:40]+'...'
+
+
+class Category(models.Model):
     code = models.CharField(max_length=17, unique=True)
     title = models.CharField(max_length=300)
 
     def __str__(self):
-        return f'{self.code} {self.title[:40]}'
+        return f'{self.code}\t{self.title[:80]}'
 
     def clean_fields(self, exclude=('title',)):
         s = self.code.replace('.', '')
@@ -18,38 +24,23 @@ class Categorie(models.Model):
             raise ValidationError('Код категории не соответствует формату!')
 
 
-class Klass(models.Model):
-    class_from = models.IntegerField(default=1)
-    class_to = models.IntegerField(default=1)
-    suffix = models.CharField(max_length=5, blank=True)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=['class_from', 'class_to', 'suffix'],
-                name='unique_class'
-            ),
-        ]
-
-    def clean_fields(self, exclude=('suffix',)):
-        if (self.class_from < 1) or (self.class_from > 11):
-            raise ValidationError('Класс должен быть от 1 до 11!')
-        if self.class_to <= self.class_from:
-            self.class_to = self.class_from
+class Grade(models.Model):
+    title = models.CharField(max_length=15, default='1', unique=True)
 
     def __str__(self):
-        if self.class_from == self.class_to:
-            return f'{self.class_from}{self.suffix}'
-        return f'{self.class_from} - {self.class_to}{self.suffix}'
+        return self.title
 
     @staticmethod
-    def parse_string(string):
-        class_parse = re.findall(r'\d{1,2}', string)
-        suffix_parse = re.findall(r'[A-я.]+', string)
-        class_from = int(class_parse[0])
-        class_to = int(class_parse[1]) if len(class_parse) == 2 else class_from
+    def parse_title(string):
+        grade_parse = re.findall(r'\d{1,2}', str(string))
+        suffix_parse = re.findall(r'[A-я.]+', str(string))
+        grade_from = int(grade_parse[0])
+        grade_to = int(grade_parse[1]) if len(grade_parse) == 2 else grade_from
         suffix = suffix_parse[0] if suffix_parse else ''
-        return class_from, class_to, suffix
+        if grade_from == grade_to:
+            return f'{grade_from}{suffix}'
+        else:
+            return f'{grade_from} - {grade_to}{suffix}'
 
 
 class Publisher(models.Model):
@@ -86,8 +77,15 @@ class Source(models.Model):
         return self.title
 
 
+class System(models.Model):
+    title = models.CharField(max_length=200, default='нет', unique=True)
+
+    def __str__(self):
+        return self.title
+
+
 def blank_class():
-    return Klass.objects.get_or_create(id=1)[0].id
+    return Grade.objects.get_or_create(id=1)[0].id
 
 
 def blank_publisher():
@@ -106,6 +104,10 @@ def blank_special():
     return Special.objects.get_or_create(id=1)[0].id
 
 
+def blank_system():
+    return System.objects.get_or_create(id=1)[0].id
+
+
 class Book(models.Model):
     source = models.ForeignKey(
         Source,
@@ -113,11 +115,17 @@ class Book(models.Model):
         default=blank_source,
         related_name='books',
     )
+    system = models.ForeignKey(
+        System,
+        on_delete=models.SET_DEFAULT,
+        default=blank_system,
+        related_name='books',
+    )
     code = models.CharField(max_length=17)
     author = models.TextField(max_length=300)
     title = models.TextField(max_length=300)
-    classes = models.ForeignKey(
-        Klass,
+    grades = models.ForeignKey(
+        Grade,
         on_delete=models.SET_DEFAULT,
         default=blank_class,
         related_name='books',
@@ -141,9 +149,12 @@ class Book(models.Model):
         related_name='books',
     )
 
+    def __str__(self):
+        return f'{crop_text(self.author)} - {crop_text(self.title)} - {self.grades} кл. (ОС: {self.system}) ({self.source})'
+
     def clean_fields(self, exclude=('id', 'source', 'author', 'title',
-                                    'classes', 'publisher', 'language',
-                                    'special')):
+                                    'grades', 'publisher', 'language',
+                                    'special', 'system')):
         s = self.code.replace('.', '')
         if not s.isnumeric():
             raise ValidationError('Код книги не соответствует формату!')

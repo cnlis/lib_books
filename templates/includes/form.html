@@ -1,9 +1,16 @@
+{% load static %}
 <div class="row justify-content-center">
   <div class="col-md-8 mb-5">
+
     <div class="card">
       <div class="card-header">
         {{ card_header }}
+        <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+           role="button" aria-expanded="true" aria-controls="collapseExample">
+          Показать форму
+        </a>
       </div>
+      <div class="collapse" id="collapseExample">
       <div class="card-body">
         {% if card_body %}
           {{ card_body }}
@@ -32,7 +39,7 @@
             {% csrf_token %}
             {% load user_filters %}
             {% for field in form %}
-              <div class="form-group row my-3"
+              <div class="form-group row my-1"
                 {% if field.field.required %} 
                   aria-required="true"
                 {% else %}
@@ -46,7 +53,11 @@
                   {% endif %}
                 </label>
                 <div>
-                  {{ field|addclass:'form-control' }}
+                  {% if 'Is ' in field.label %}
+                    {{ field|addclass:'form-check' }}
+                  {% else %}
+                    {{ field|addclass:'form-control' }}
+                  {% endif %}
                   {% if field.help_text %}
                     <small 
                       id="{{ field.id_for_label }}-help" 
@@ -59,17 +70,18 @@
               </div>
             {% endfor %}
             <div class="d-flex justify-content-center">
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" name="submit">
                   {{ button }}
               </button>
-            {% if link %}
-              <a href="{% url link %}" class="btn btn-link">
-                {{ link_text }}</a>
-            {% endif %}
+              {% if link %}
+                <a href="{% url link %}" class="btn btn-link">
+                  {{ link_text }}</a>
+              {% endif %}
             </div>
           </form>
         {% endif %}
       </div> <!-- card body -->
+      </div>
     </div> <!-- card -->
   </div> <!-- col -->
 </div> <!-- row -->

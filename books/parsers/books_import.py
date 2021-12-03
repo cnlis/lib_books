@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 
-from books.models import Book, Klass, Language, Publisher, Source, Special
+from books.models import Book, Grade, Language, Publisher, Source, Special
 
 
 def books_parser(pages_count):
@@ -34,22 +34,21 @@ def books_parser(pages_count):
 
 
 def books_saver(books_list, source):
-    class_set = {}
+    grade_set = {}
     language_set = {}
     publisher_set = {}
     special_set = {}
     source = Source.objects.get_or_create(title=source)
     for item in books_list:
-        class_set[item[3]] = 0
+        grade_set[item[3]] = 0
         language_set[item[5]] = 0
         publisher_set[item[4]] = 0
         special_set[item[6]] = 0
-    for item in class_set:
-        class_from, class_to, suffix = Klass.parse_string(item)
-        class_set[item] = Klass.objects.get_or_create(
-            class_from=class_from,
-            class_to=class_to,
-            suffix=suffix
+    for item in grade_set:
+        title = Grade.parse_title(item)
+        grade_set[item] = (
+            Grade.objects.get_or_create(title=title)
+            if item else Grade.objects.get_or_create(pk=1)
         )
     for item in language_set:
         language_set[item] = (
@@ -70,7 +69,7 @@ def books_saver(books_list, source):
             code=item[0],
             title=item[1],
             author=item[2],
-            classes=class_set[item[3]][0],
+            grades=grade_set[item[3]][0],
             publisher=publisher_set[item[4]][0],
             language=language_set[item[5]][0],
             special=special_set[item[6]][0]

@@ -11,8 +11,9 @@
     </tr>
     {% for item in books %}
       <tr>
-        <td>{{ item.code }}</td><td>{{ item.author }}</td>
-        <td>{{ item.title }}</td><td>{{ item.classes }}</td>
+        <td><a href="{% url 'books:detail' item.id %}">{{ item.code }}</a></td>
+        <td>{{ item.author }}</td>
+        <td>{{ item.title }}</td><td>{{ item.grades }}</td>
         <td>{{ item.publisher }}</td><td>{{ item.language }}</td>
         <td>{{ item.special }}</td>
       </tr>

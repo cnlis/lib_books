@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+  Документы о поступлении
+{% endblock %}
+{% block content %}
+  {% include 'includes/form.html' with card_header='Добавление документа о поступлении' button='Добавить' %}
+  <table class="table table-bordered table-hover table-sm">
+    <tr>
+      <th>Номер документа</th><th>Дата документа</th><th>Описание</th>
+      <th>Является заказом</th><th>Действия</th>
+    </tr>
+    {% for item in docs %}
+      <tr>
+        <td>{{ item.title }}</td>
+        <td>{{ item.date }}</td>
+        <td>{{ item.description }}</td>
+        <td><span class="badge rounded-pill bg-{% if item.is_order %}danger ">да{% else %}success">нет{% endif %}</span></td>
+        <td>
+          <a href="{% url 'funds:income_detail' item.pk %}" role="button"
+             class="btn btn-outline-primary btn-sm">Открыть
+          </a>
+          <a href="{% url 'funds:income_detail' item.pk %}" role="button"
+             class="btn btn-outline-primary btn-sm">Редактировать
+          </a>
+          <a href="{% url 'funds:income_del' item.pk %}" role="button"
+             class="btn btn-danger btn-sm">Удалить
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

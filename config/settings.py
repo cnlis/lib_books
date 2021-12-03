@@ -16,7 +16,11 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'books.apps.BooksConfig',
+    'funds.apps.FundsConfig',
     'core.apps.CoreConfig',
+    # 3rd party
+
+    # included
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
