@@ -4,22 +4,23 @@
 {% endblock %}
 {% block content %}
   {% include 'includes/form.html' with card_header='Добавление документа о поступлении' button='Добавить' %}
-  <table class="table table-bordered table-hover table-sm">
+  <table class="table table-bordered table-hover table-sm fs-6">
     <tr>
-      <th>Номер документа</th><th>Дата документа</th><th>Описание</th>
-      <th>Является заказом</th><th>Действия</th>
+      <th class="col-2">Номер документа</th><th class="col-1">Дата документа</th>
+      <th class="col-3">Описание</th>
+      <th class="col-1">Является заказом</th><th class="col-3">Действия</th>
     </tr>
     {% for item in docs %}
       <tr>
         <td>{{ item.title }}</td>
-        <td>{{ item.date }}</td>
+        <td>{{ item.date|date:"SHORT_DATE_FORMAT" }}</td>
         <td>{{ item.description }}</td>
         <td><span class="badge rounded-pill bg-{% if item.is_order %}danger ">да{% else %}success">нет{% endif %}</span></td>
         <td>
           <a href="{% url 'funds:income_detail' item.pk %}" role="button"
              class="btn btn-outline-primary btn-sm">Открыть
           </a>
-          <a href="{% url 'funds:income_detail' item.pk %}" role="button"
+          <a href="{% url 'funds:income_edit' item.pk %}" role="button"
              class="btn btn-outline-primary btn-sm">Редактировать
           </a>
           <a href="{% url 'funds:income_del' item.pk %}" role="button"

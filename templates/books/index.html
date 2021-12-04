@@ -4,12 +4,12 @@
 {% endblock %}
 {% block content %}
   {% include 'includes/form.html' with card_header='Поиск учебника' button='Поиск' link='books:index' link_text='Очистить' %}
-  <table class="table table-bordered table-hover table-sm">
+  <table class="table table-bordered table-hover table-sm fs-6">
     <tr>
       <th>Код</th><th>Автор</th><th>Название</th><th>Класс</th>
       <th>Издательство</th><th>Язык</th><th>Особенности</th>
     </tr>
-    {% for item in books %}
+    {% for item in page_obj %}
       <tr>
         <td><a href="{% url 'books:detail' item.id %}">{{ item.code }}</a></td>
         <td>{{ item.author }}</td>
@@ -19,4 +19,5 @@
       </tr>
     {% endfor %}
   </table>
+  {% include 'includes/paginator.html' %}
 {% endblock %}

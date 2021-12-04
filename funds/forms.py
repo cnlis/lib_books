@@ -52,6 +52,7 @@ class IncomeDetail(forms.ModelForm):
             ),
         }
 
+
 class IncomeDetailWithOutBook(forms.ModelForm):
 
     class Meta:

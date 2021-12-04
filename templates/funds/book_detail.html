@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}
+  Карточка учебника
+{% endblock %}
+{% block content %}
+  <p class="fs-2">Информация об учебнике</p>
+  <p>
+  <a class="btn btn-primary btn-sm" role="button" href="{% url 'books:detail' book.book.id %}">
+    Редактировать в Перечне
+  </a>
+  </p>
+  <p class="fs-5">
+    <ul>
+      <li><b>Источник:</b> {{ book.book.source }}</li>
+      <li><b>Код:</b> {{ book.book.code }}</li>
+      <li><b>Образовательная система:</b> {{ book.book.system }}</li>
+      <li><b>Автор:</b> {{ book.book.author }}</li>
+      <li><b>Название:</b> {{ book.book.title }}</li>
+      <li><b>Классы:</b> {{ book.book.grades }}</li>
+      <li><b>Издательство:</b> {{ book.book.publisher }}</li>
+      <li><b>Язык:</b> {{ book.book.language }}</li>
+      <li><b>Особенности:</b> {{ book.book.special }}</li>
+    </ul>
+  </p>
+  <p class="fs-5">
+    <ul>
+      <li><b>Экземпляров в фонде (с учетом частей):</b> {{ book.fund_count }}</li>
+      <li><b>Общее количество в наличии:</b> {{ book.overall_count }}</li>
+    </ul>
+  </p>
+  <p class="fs-5">
+      Количество по частям:
+    <table class="table table-bordered table-hover table-sm fs-6">
+      <tr>
+
+      </tr>
+    </table>
+  </p>
+  <p class="fs-2">Поступления</p>
+  <table class="table table-bordered table-hover table-sm fs-6">
+    <tr>
+      <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
+      <th>Часть</th><th>Количество</th>
+      <th>Цена</th><th>Действия</th>
+    </tr>
+    {% for item in income_docs %}
+      <tr>
+        <td>{{ item.document.title }}</td>
+        <td>{{ item.document.date }}</td>
+        <td>{{ item.document.description }}</td>
+        <td>{{ item.pub_year }}</td>
+        <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
+        <td>{{ item.count }}</td>
+        <td>{{ item.price }}</td>
+          <td>
+          <a href="{% url 'funds:income_detail' item.pk %}" role="button"
+             class="btn btn-outline-primary btn-sm">Открыть
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p class="fs-2">Списания</p>
+  <table class="table table-bordered table-hover table-sm fs-6">
+    <tr>
+      <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
+      <th>Часть</th><th>Количество</th>
+      <th>Цена</th><th>Действия</th>
+    </tr>
+    {% for item in outcome_docs %}
+      <tr>
+        <td>{{ item.document.title }}</td>
+        <td>{{ item.document.date }}</td>
+        <td>{{ item.document.description }}</td>
+        <td>{{ item.pub_year }}</td>
+        <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
+        <td>{{ item.count }}</td>
+        <td>{{ item.price }}</td>
+          <td>
+          <a href="" role="button"
+             class="btn btn-outline-primary btn-sm">Открыть
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p class="fs-2">Обменный фонд</p>
+  <table class="table table-bordered table-hover table-sm fs-6">
+    <tr>
+      <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
+      <th>Часть</th><th>Количество</th>
+      <th>Цена</th><th>Действия</th>
+    </tr>
+    {% for item in exchange_docs %}
+      <tr>
+        <td>{{ item.document.title }}</td>
+        <td>{{ item.document.date }}</td>
+        <td>{{ item.document.description }}</td>
+        <td>{{ item.pub_year }}</td>
+        <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
+        <td>{{ item.count }}</td>
+        <td>{{ item.price }}</td>
+          <td>
+          <a href="" role="button"
+             class="btn btn-outline-primary btn-sm">Открыть
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  {% include 'includes/select2.html' with id_element='"#id_book"' url='funds:index' field='text' %}
+{% endblock %}

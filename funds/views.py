@@ -6,7 +6,7 @@ from django.forms import modelformset_factory
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
-from funds.models import Fund, Document, Income
+from funds.models import Fund, Document, Income, Outcome, Exchange
 from books.models import Book
 from funds.forms import FundList, NewDocument, IncomeDetail, \
     IncomeDetailWithOutBook
@@ -99,6 +99,20 @@ def funds_income_detail(request, doc_id):
     return render(request, template, context)
 
 
+def funds_income_edit(request, doc_id):
+    template = 'funds/income_edit.html'
+    document = Document.objects.get(pk=doc_id)
+    form = NewDocument(request.POST or None, instance=document)
+    context = {
+        'form': form
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+        return redirect('funds:income_list')
+    return render(request, template, context)
+
+
 def funds_income_del(request, doc_id):
     Document.objects.filter(pk=doc_id).delete()
     return redirect('funds:income_list')
@@ -107,3 +121,18 @@ def funds_income_del(request, doc_id):
 def funds_income_book_del(request, doc_id, record_id):
     Income.objects.filter(pk=record_id).delete()
     return redirect('funds:income_detail', doc_id=doc_id)
+
+
+def funds_book_detail(request, book_id):
+    template = 'funds/book_detail.html'
+    book = Fund.objects.select_related('book').get(pk=book_id)
+    income_docs = Income.objects.select_related('book').filter(book=book_id).all()
+    outcome_docs = Outcome.objects.filter(book_income_id=book_id).all()
+    exchange_docs = Exchange.objects.filter(book=book_id).all()
+    context = {
+        'book': book,
+        'income_docs': income_docs,
+        'outcome_docs': outcome_docs,
+        'exchange_docs': exchange_docs,
+    }
+    return render(request, template, context)

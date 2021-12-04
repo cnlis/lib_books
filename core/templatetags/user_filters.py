@@ -11,3 +11,8 @@ def addclass(field, css):
 @register.filter
 def user_liked(likes, user):
     return likes.filter(user=user)
+
+
+@register.filter
+def verbose_name(obj):
+    return obj._meta.verbose_name

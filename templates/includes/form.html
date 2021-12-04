@@ -5,12 +5,12 @@
     <div class="card">
       <div class="card-header">
         {{ card_header }}
-        <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-           role="button" aria-expanded="true" aria-controls="collapseExample">
-          Показать форму
+        <a class="btn btn-primary btn-sm float-end" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+           role="button" aria-expanded="false" aria-controls="collapseExample">
+          Скрыть
         </a>
       </div>
-      <div class="collapse" id="collapseExample">
+      <div class="collapse show" id="collapseExample">
       <div class="card-body">
         {% if card_body %}
           {{ card_body }}
@@ -56,7 +56,7 @@
                   {% if 'Is ' in field.label %}
                     {{ field|addclass:'form-check' }}
                   {% else %}
-                    {{ field|addclass:'form-control' }}
+                    {{ field|addclass:'form-control form-control-sm' }}
                   {% endif %}
                   {% if field.help_text %}
                     <small 

@@ -1,6 +1,7 @@
 import operator
 from functools import reduce
 
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Q
@@ -10,13 +11,23 @@ from books.models import Book, Category, Grade
 from books.forms import SearchForm, DetailBook, AddClasses
 
 
+BOOKS_COUNT = 15
+
+
+def create_paginator(request, post_list):
+    paginator = Paginator(post_list, BOOKS_COUNT)
+    page_number = request.GET.get('page') or 1
+    return (paginator.get_page(number=page_number),
+            paginator.get_elided_page_range(number=page_number))
+
+
 def books_index(request):
     books = Book.objects.select_related(
         'grades',
         'publisher',
         'language',
         'special',
-    ).all()
+    ).order_by('code').all()
     form = SearchForm(request.POST or None)
     if request.method == 'POST':
         search_list = request.POST.get('search').split()
@@ -36,8 +47,10 @@ def books_index(request):
         if input_category:
             category = Category.objects.get(pk=input_category)
             books = books.filter(code__startswith=category.code).all()
+    page_obj, pages = create_paginator(request, books)
     context = {
-        'books': books[:100],
+        'page_obj': page_obj,
+        'pages': pages,
         'form': form,
     }
     return render(request, 'books/index.html', context)
@@ -49,7 +62,6 @@ def books_detail(request, book_id):
     if request.is_ajax():
         term = request.GET.get('term')
         classes = Grade.objects.filter(title__contains=term).all()
-        print(classes.values())
         return JsonResponse(list(classes.values()), safe=False)
     if request.method == 'POST':
         if form.is_valid():
