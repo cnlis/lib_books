@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}
-  Документы о поступлении
+  Документы о списании
 {% endblock %}
 {% block content %}
-  {% include 'includes/form.html' with card_header='Добавление документа о поступлении' button='Добавить' %}
+  {% include 'includes/form.html' with card_header='Добавление документа о списании' button='Добавить' %}
   <table class="table table-bordered table-hover table-sm fs-6">
     <tr>
       <th class="col-2">Номер документа</th><th class="col-1">Дата документа</th>
       <th class="col-3">Описание</th>
-      <th class="col-1">Является заказом</th><th class="col-3">Действия</th>
+      <th class="col-3">Действия</th>
     </tr>
     {% for item in docs %}
       <tr>
         <td>{{ item.title }}</td>
         <td>{{ item.date|date:"SHORT_DATE_FORMAT" }}</td>
         <td>{{ item.description }}</td>
-        <td><span class="badge rounded-pill bg-{% if item.type == 5 %}danger ">да{% else %}success">нет{% endif %}</span></td>
         <td>
-          <a href="{% url 'funds:income_detail' item.pk %}" role="button"
+          <a href="{% url 'funds:outcome_detail' item.pk %}" role="button"
              class="btn btn-outline-primary btn-sm">Открыть
           </a>
-          <a href="{% url 'funds:income_edit' item.pk %}" role="button"
+          <a href="{% url 'funds:outcome_edit' item.pk %}" role="button"
              class="btn btn-outline-primary btn-sm">Редактировать
           </a>
-          <a href="{% url 'funds:income_del' item.pk %}" role="button"
+          <a href="{% url 'funds:outcome_del' item.pk %}" role="button"
              class="btn btn-danger btn-sm">Удалить
           </a>
         </td>

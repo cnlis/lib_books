@@ -1,0 +1,23 @@
+<table class="table table-bordered table-hover table-sm fs-6">
+  <tr>
+    <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
+    <th>Часть</th><th>Количество</th>
+    <th>Цена</th><th>Действия</th>
+  </tr>
+  {% for item in table_data %}
+    <tr>
+      <td>{{ item.document.title }}</td>
+      <td>{{ item.document.date|date:"SHORT_DATE_FORMAT" }}</td>
+      <td>{{ item.document.description }}</td>
+      <td>{{ item.pub_year }}</td>
+      <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
+      <td>{{ item.count }}</td>
+      <td>{{ item.price }}</td>
+        <td>
+        <a href="{% url link item.document.pk %}" role="button"
+           class="btn btn-outline-primary btn-sm">Открыть
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+</table>

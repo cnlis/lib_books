@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}
+  Данные документа о списании
+{% endblock %}
+{% block content %}
+  {% include 'includes/form.html' with card_header='Добавление учебника' button='Добавить' %}
+  {% include 'funds/includes/doc_detail_table.html' with link='funds:outcome_book_del' %}
+  {% include 'includes/select2.html' with id_element='"#id_book"' url='funds:outcome_detail' addition=doc_id field='text' %}
+{% endblock %}

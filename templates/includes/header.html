@@ -23,7 +23,7 @@
           {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link
-                {% if view_name  == 'books:index' %}active{% endif %}"
+                {% if 'books:index' in view_name %}active{% endif %}"
                 href="{% url 'books:index' %}"
               >
                 Перечень
@@ -31,7 +31,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link
-                {% if view_name  == 'funds:income_list' %}active{% endif %}"
+                {% if 'funds:income_list' in view_name %}active{% endif %}"
                 href="{% url 'funds:income_list' %}"
               >
                 Поступления
@@ -39,42 +39,47 @@
             </li>
             <li class="nav-item">
               <a class="nav-link
-                {% if view_name  == '' %}active{% endif %}"
-                href=""
+                {% if   'funds:outcome_list' in view_name %}active{% endif %}"
+                href="{% url 'funds:outcome_list' %}"
               >
                 Списания
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link
-                {% if view_name  == '' %}active{% endif %}"
-                href=""
-              >
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownExchange"
+                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Обменный фонд
               </a>
+              <ul class="dropdown-menu" area-labelleby="navbarDropdownExchange">
+                <li>
+                  <a class="dropdown-item" href="#">
+                    Выдача
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">
+                    Получение
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link link-light
-                {% if view_name  == '' %}
-                  active
-                {% endif %}"
-                href=""
-              >
-                Изменить пароль
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser"
+                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Пользователь: {{ user }}
               </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link link-light
-                {% if view_name  == '' %}active{% endif %}"
-                href=""
-              >
-                Выйти
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link link-light" href="">
-                Пользователь: {{ user.get_full_name }}
-              </a>
+              <ul class="dropdown-menu" area-labelleby="navbarDropdownUser">
+                <li>
+                  <a class="dropdown-item" href="#">
+                    Изменить пароль
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">
+                    Выйти
+                  </a>
+                </li>
+              </ul>
             </li>
           {% else %}
             <li class="nav-item">

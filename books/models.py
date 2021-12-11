@@ -1,6 +1,7 @@
 import re
 
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models, IntegrityError, transaction
 from django.db.models.constraints import UniqueConstraint
 
@@ -124,7 +125,7 @@ class Book(models.Model):
     code = models.CharField(max_length=17)
     author = models.TextField(max_length=300)
     title = models.TextField(max_length=300)
-    parts = models.IntegerField(default=0)
+    parts = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     grades = models.ForeignKey(
         Grade,
         on_delete=models.SET_DEFAULT,

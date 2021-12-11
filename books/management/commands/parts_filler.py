@@ -12,4 +12,6 @@ class Command(BaseCommand):
             result = re.findall(r'в \d{1}\ час', book.title)
             if result:
                 book.parts = int(result[0].split()[1])
-                book.save()
+            else:
+                book.parts = 1
+            book.save()

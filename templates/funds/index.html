@@ -7,18 +7,26 @@
   <table class="table table-bordered table-hover table-sm fs-6">
     <tr>
       <th>Образовательная система</th><th>Автор</th><th>Название</th><th>Класс</th>
-      <th>Количество</th><th>Общее количество</th><th>Действия</th>
+      <th>Фонд</th><th>ОФ</th><th>Общеe</th>
+      <th>Заказ</th><th>Контингент</th><th>Действия</th>
     </tr>
     {% for item in funds %}
       <tr>
         <td>{{ item.book.system }}</td>
         <td>{{ item.book.author }}</td>
         <td>{{ item.book.title }}</td><td>{{ item.book.grades }}</td>
-        <td>{{ item.fund_count }}</td><td>{{ item.overall_count }}</td>
+        <td>{{ item.fund_count }}</td><td>{{ item.exchange_count }}</td>
+        <td>{{ item.overall_count }}</td><td>{{ item.order_count }}</td>
+        <td>{{ item.pupils }}</td>
           <td>
           <a href="{% url 'funds:book_detail' item.pk %}" role="button"
-             class="btn btn-outline-primary btn-sm">Открыть
+             class="btn btn-outline-primary btn-sm col-12">Открыть
           </a>
+          {% if not item.records_count %}
+            <a href="{% url 'funds:book_detail' item.pk %}" role="button"
+               class="btn btn-danger btn-sm col-12">Удалить
+            </a>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}

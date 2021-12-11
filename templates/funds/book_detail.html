@@ -30,83 +30,31 @@
   </p>
   <p class="fs-5">
       Количество по частям:
+    <div class="col-3">
     <table class="table table-bordered table-hover table-sm fs-6">
       <tr>
-
+        {% for part in parts%}
+          {% if not forloop.counter0 %}
+            <th class="col-1">Все</th>
+          {% else %}
+            <th class="col-1">{{ forloop.counter0 }}</th>
+          {% endif %}
+        {% endfor %}
+      </tr>
+      <tr>
+        {% for part in parts%}
+          <td>
+            {{ part }}
+          </td>
+        {% endfor %}
       </tr>
     </table>
+    </div>
   </p>
   <p class="fs-2">Поступления</p>
-  <table class="table table-bordered table-hover table-sm fs-6">
-    <tr>
-      <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
-      <th>Часть</th><th>Количество</th>
-      <th>Цена</th><th>Действия</th>
-    </tr>
-    {% for item in income_docs %}
-      <tr>
-        <td>{{ item.document.title }}</td>
-        <td>{{ item.document.date }}</td>
-        <td>{{ item.document.description }}</td>
-        <td>{{ item.pub_year }}</td>
-        <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
-        <td>{{ item.count }}</td>
-        <td>{{ item.price }}</td>
-          <td>
-          <a href="{% url 'funds:income_detail' item.pk %}" role="button"
-             class="btn btn-outline-primary btn-sm">Открыть
-          </a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+  {% include 'funds/includes/book_detail_table.html' with table_data=income_docs link='funds:income_detail' %}
   <p class="fs-2">Списания</p>
-  <table class="table table-bordered table-hover table-sm fs-6">
-    <tr>
-      <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
-      <th>Часть</th><th>Количество</th>
-      <th>Цена</th><th>Действия</th>
-    </tr>
-    {% for item in outcome_docs %}
-      <tr>
-        <td>{{ item.document.title }}</td>
-        <td>{{ item.document.date }}</td>
-        <td>{{ item.document.description }}</td>
-        <td>{{ item.pub_year }}</td>
-        <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
-        <td>{{ item.count }}</td>
-        <td>{{ item.price }}</td>
-          <td>
-          <a href="" role="button"
-             class="btn btn-outline-primary btn-sm">Открыть
-          </a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+  {% include 'funds/includes/book_detail_table.html' with table_data=outcome_docs link='funds:outcome_detail' %}
   <p class="fs-2">Обменный фонд</p>
-  <table class="table table-bordered table-hover table-sm fs-6">
-    <tr>
-      <th>Номер</th><th>Дата</th><th>Описание</th><th>Год издания</th>
-      <th>Часть</th><th>Количество</th>
-      <th>Цена</th><th>Действия</th>
-    </tr>
-    {% for item in exchange_docs %}
-      <tr>
-        <td>{{ item.document.title }}</td>
-        <td>{{ item.document.date }}</td>
-        <td>{{ item.document.description }}</td>
-        <td>{{ item.pub_year }}</td>
-        <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
-        <td>{{ item.count }}</td>
-        <td>{{ item.price }}</td>
-          <td>
-          <a href="" role="button"
-             class="btn btn-outline-primary btn-sm">Открыть
-          </a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
-  {% include 'includes/select2.html' with id_element='"#id_book"' url='funds:index' field='text' %}
+  {% include 'funds/includes/book_detail_table.html' with table_data=exchange_docs link='funds:income_detail' %}
 {% endblock %}
