@@ -1,20 +1,19 @@
 <table class="table table-bordered table-hover table-sm fs-6">
   <tr>
-    <th class="col-1">Номер</th><th class="col-1">Дата</th><th class="col-1">Описание</th><th class="col-1">Год издания</th>
+    <th class="col-1">Операция</th><th class="col-1">Школа</th><th class="col-2">Комментарий</th><th class="col-1">Год издания</th>
     <th class="col-1">Часть</th><th class="col-1">Количество</th>
-    <th class="col-1">Цена</th><th class="col-1">Действия</th>
+    <th class="col-1">Действия</th>
   </tr>
   {% for item in table_data %}
     <tr>
-      <td>{{ item.document.title }}</td>
-      <td>{{ item.document.date|date:"SHORT_DATE_FORMAT" }}</td>
-      <td>{{ item.document.description }}</td>
+      <td>{% if item.type == 3 %}поступление{% else %}выдача{% endif %}</td>
+      <td>{{ item.school }}</td>
+      <td>{{ item.comment }}</td>
       <td>{{ item.pub_year }}</td>
       <td>{% if item.part %}{{ item.part }}{% else %}все{% endif %}</td>
       <td>{{ item.count }}</td>
-      <td>{{ item.price }}</td>
         <td>
-        <a href="{% url link item.document.pk %}" role="button"
+        <a href="{% url link %}" role="button"
            class="btn btn-outline-primary btn-sm">Открыть
         </a>
       </td>

@@ -3,10 +3,11 @@ from django.forms import modelformset_factory
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
-from funds.calcs import sum_fund, parts_count
-from funds.models import Fund, Document, Item
 from books.models import Book
-from funds.forms import FundList, NewIncomeDocument, IncomeDetail, NewOutcomeDocument, OutcomeDetail, IncomeList
+from funds.calcs import sum_fund, parts_count
+from funds.forms import FundList, NewIncomeDocument, IncomeDetail, \
+    NewOutcomeDocument, OutcomeDetail, IncomeList, ExchangeDetail
+from funds.models import Fund, Document, Item
 
 
 def book_ajax_query(t):
@@ -19,6 +20,14 @@ def book_ajax_query(t):
 
 def item_ajax_query(t):
     return Item.objects.select_related('book').filter(type=1).filter(
+        Q(book__author__contains=t) |
+        Q(book__title__contains=t) |
+        Q(book__grades__title__contains=t)
+    ).all()
+
+
+def fund_ajax_query(t):
+    return Fund.objects.select_related('book').filter(
         Q(book__author__contains=t) |
         Q(book__title__contains=t) |
         Q(book__grades__title__contains=t)
@@ -40,7 +49,7 @@ def funds_index(request):
     funds = Fund.objects.select_related(
         'book',
     ).all().order_by('book__grades', 'book__code')
-    form = FundList(request.POST or None)
+    form = FundList()
     if request.is_ajax():
         return ajax_response(request, book_ajax_query)
     if request.method == 'POST':
@@ -98,7 +107,11 @@ def funds_income_detail(request, doc_id):
                     if form.is_valid():
                         form.save()
             else:
-                return render(request, template, {'formset': formset, 'form': form, 'doc_id': doc_id,})
+                return render(
+                    request,
+                    template,
+                    {'formset': formset, 'form': form, 'doc_id': doc_id}
+                )
         return redirect('funds:income_detail', doc_id=doc_id)
     context = {
         'formset': formset,
@@ -210,7 +223,11 @@ def funds_outcome_detail(request, doc_id):
                     if form.is_valid():
                         form.save()
             else:
-                return render(request, template, {'formset': formset, 'form': form, 'doc_id': doc_id})
+                return render(
+                    request,
+                    template,
+                    {'formset': formset, 'form': form, 'doc_id': doc_id}
+                )
         return redirect('funds:outcome_detail', doc_id=doc_id)
     context = {
         'formset': formset,
@@ -224,9 +241,7 @@ def funds_outcome_edit(request, doc_id):
     template = 'funds/outcome_edit.html'
     document = Document.objects.get(pk=doc_id)
     form = NewOutcomeDocument(request.POST or None, instance=document)
-    context = {
-        'form': form
-    }
+    context = {'form': form}
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -242,3 +257,56 @@ def funds_outcome_del(request, doc_id):
 def funds_outcome_book_del(request, doc_id, record_id):
     Item.objects.filter(pk=record_id).delete()
     return redirect('funds:outcome_detail', doc_id=doc_id)
+
+
+def exchange_controller(request, types, url):
+    template = 'funds/exchange.html'
+    ExchangeSet = modelformset_factory(Item, form=ExchangeDetail, extra=0)
+    doc_data = Item.objects.filter(type=types).order_by('school').all()
+    formset = ExchangeSet(queryset=doc_data)
+    form = FundList()
+    if request.is_ajax():
+        return ajax_response(request, fund_ajax_query)
+    if request.method == 'POST':
+        if 'submit' in request.POST:
+            item = Fund.objects.get(pk=request.POST.get('book'))
+            Item.objects.create(
+                type=types,
+                book=item.book,
+            )
+        if 'save' in request.POST:
+            formset = ExchangeSet(request.POST)
+            if formset.is_valid():
+                for form in formset:
+                    if form.is_valid():
+                        form.save()
+            else:
+                return render(
+                    request,
+                    template,
+                    {'formset': formset, 'form': form}
+                )
+        return redirect(url)
+    context = {
+        'formset': formset,
+        'form': form,
+    }
+    return render(request, template, context)
+
+
+def exchange_in(request):
+    return exchange_controller(request, 3, 'funds:exchange_in')
+
+
+def exchange_out(request):
+    return exchange_controller(request, 4, 'funds:exchange_out')
+
+
+def exchange_in_del(request, record_id):
+    Item.objects.filter(pk=record_id).delete()
+    return redirect('funds:exchange_in')
+
+
+def exchange_out_del(request, record_id):
+    Item.objects.filter(pk=record_id).delete()
+    return redirect('funds:exchange_out')

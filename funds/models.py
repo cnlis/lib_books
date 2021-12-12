@@ -65,3 +65,6 @@ class Fund(models.Model):
     @property
     def fund_parts(self):
         pass
+
+    def __str__(self):
+        return f'{self.book} - в фонде {self.fund_count} экз.'

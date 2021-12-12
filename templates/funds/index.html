@@ -11,7 +11,7 @@
       <th>Заказ</th><th>Контингент</th><th>Действия</th>
     </tr>
     {% for item in funds %}
-      <tr>
+      <tr class="table-danger">
         <td>{{ item.book.system }}</td>
         <td>{{ item.book.author }}</td>
         <td>{{ item.book.title }}</td><td>{{ item.book.grades }}</td>

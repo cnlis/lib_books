@@ -56,5 +56,5 @@
   <p class="fs-2">Списания</p>
   {% include 'funds/includes/book_detail_table.html' with table_data=outcome_docs link='funds:outcome_detail' %}
   <p class="fs-2">Обменный фонд</p>
-  {% include 'funds/includes/book_detail_table.html' with table_data=exchange_docs link='funds:income_detail' %}
+  {% include 'funds/includes/book_exchange_table.html' with table_data=exchange_docs link='funds:exchange_in' %}
 {% endblock %}

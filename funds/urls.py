@@ -24,4 +24,10 @@ urlpatterns = [
          views.funds_outcome_book_del, name='outcome_book_del'),
     path('outcomes/<int:doc_id>/edit', views.funds_outcome_edit,
          name='outcome_edit'),
+    path('exchange_in/', views.exchange_in, name='exchange_in'),
+    path('exchange_out/', views.exchange_out, name='exchange_out'),
+    path('exchange_in/<int:record_id>/del/',
+         views.exchange_in_del, name='exchange_in_del'),
+    path('exchange_out/<int:record_id>/del/',
+         views.exchange_out_del, name='exchange_out_del'),
 ]

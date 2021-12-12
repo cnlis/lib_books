@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}
+  Обменный фонд
+{% endblock %}
+{% block content %}
+  {% include 'includes/form.html' with card_header='Добавление учебника' button='Добавить' %}
+  {% include 'funds/includes/exchange_table.html' with link='funds:exchange_in_del' %}
+  {% include 'includes/select2.html' with id_element='"#id_book"' url='funds:exchange_in' field='text' %}
+{% endblock %}
