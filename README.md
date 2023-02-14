@@ -1,2 +1,2 @@
 # lib_books
-Django site for work with study books in schools
+Django project with web-interface to keep records of school study books.
